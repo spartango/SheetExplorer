@@ -138,11 +138,14 @@ function updateHistogram(field) {
             Object.keys(json.histogram).forEach(function (key) {
                 data.push({name: key, value: json.histogram[key]});
             });
+            data.sort(function (a, b) {
+                return b.value - a.value;
+            });
 
             // Calculate dimensions
-            height = (12 * data.length);
+            height = Math.max((12 * data.length), window.innerHeight);
             var longestLabel = legendWidth(data);
-            margin.left = longestLabel > width / 4 ? width / 4 : longestLabel + 5;
+            margin.left = Math.min(width / 4, longestLabel + 5);
             svg.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             d3.select("svg").attr("height", height + margin.top + margin.bottom);

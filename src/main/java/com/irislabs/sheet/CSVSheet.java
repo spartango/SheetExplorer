@@ -59,7 +59,8 @@ public class CSVSheet implements Sheet {
 
     private void parseFields() throws IOException {
         CSVReader reader = new CSVReader(new FileReader(file));
-        StreamSupport.stream(Spliterators.spliteratorUnknownSize(reader.iterator(), Spliterator.IMMUTABLE),
+        StreamSupport.stream(Spliterators.spliteratorUnknownSize(reader.iterator(),
+                                                                 Spliterator.IMMUTABLE | Spliterator.NONNULL),
                              false)
                      .findFirst()
                      .map(Arrays::asList)

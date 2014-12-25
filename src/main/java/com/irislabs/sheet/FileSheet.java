@@ -15,9 +15,9 @@ import java.util.stream.Stream;
  */
 public class FileSheet implements Sheet {
 
-    private File         file;
-    private List<String> fields;
-    private String       delimiter;
+    protected File         file;
+    protected List<String> fields;
+    protected String       delimiter;
 
     public FileSheet(String path) throws IOException {
         this(new File(path), "\t");
@@ -43,7 +43,7 @@ public class FileSheet implements Sheet {
         }
     }
 
-    private void parseFields() throws IOException {
+    protected void parseFields() throws IOException {
         Files.lines(file.toPath())
              .findFirst()
              .ifPresent(line -> fields = Stream.of(line.split(delimiter))
@@ -51,7 +51,7 @@ public class FileSheet implements Sheet {
                                                .collect(Collectors.toList()));
     }
 
-    private Stream<SheetEntry> parseLines() throws IOException {
+    protected Stream<SheetEntry> parseLines() throws IOException {
         return Files.lines(file.toPath())
                 .skip(1) // Skip the header
                 .map(line -> SheetEntry.parseEntry(line, delimiter, fields));

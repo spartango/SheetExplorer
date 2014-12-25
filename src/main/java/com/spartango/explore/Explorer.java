@@ -3,7 +3,7 @@ package com.spartango.explore;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.irislabs.sheet.FileSheet;
+import com.irislabs.sheet.QuotedFileSheet;
 import com.irislabs.sheet.Sheet;
 import com.irislabs.sheet.SheetEntry;
 import io.undertow.Handlers;
@@ -307,8 +307,10 @@ public class Explorer {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("Loading file");
-        final Sheet sheet = new FileSheet("/Users/spartango/Data/LESO Program data/LESO data - all states.txt");
-//        final Sheet sheet = new CSVSheet("/Users/spartango/Data/War Diaries/afg.csv");
+//        final Sheet sheet = new FileSheet("/Users/spartango/Data/LESO Program data/LESO data - all states.txt");
+        final Sheet sheet = new QuotedFileSheet("/Users/spartango/Data/War Diaries/afg.csv", ",");
+
+//        final Sheet sheet = new QuotedFileSheet("/Users/spartango/Data/War Diaries/iraq-war-diary-redacted.csv", ",");
         System.out.println("Loaded file: fields -> " + sheet.fields());
         System.out.println("Starting server on 8080");
         final Explorer explorer = new Explorer(sheet);
