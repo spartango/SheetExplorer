@@ -2,23 +2,23 @@
  * Created by spartango on 12/23/14.
  */
 
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+var margin = {top: 20, right: 20, bottom: 0, left: 100},
+    width = window.innerWidth - margin.left - margin.right,
+    height = 800 - margin.top - margin.bottom;
 
-var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
+var y = d3.scale.ordinal()
+    .rangeBands([0, height], .1);
 
-var y = d3.scale.linear()
-    .range([height, 0]);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
+var x = d3.scale.linear()
+    .range([0, width]);
 
 var yAxis = d3.svg.axis()
     .scale(y)
-    .orient("left")
+    .orient("left");
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("top")
     .ticks(10, "");
 
 var svg = d3.select("#chartarea").append("svg")
@@ -65,10 +65,14 @@ function loadStages() {
     );
 }
 
+function showInfo(field, name, value) {
+    d3.select("#info").text(field + " = " + name + " (" + value + ")");
+}
+
 function renderHistogram() {
     svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        //.attr("transform", "translate(0,0)")
         .call(xAxis);
 
     svg.append("g")
@@ -77,9 +81,9 @@ function renderHistogram() {
         .append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("Count");
+        .attr("dy", ".71em");
+    //.style("text-anchor", "end")
+    //.text("Count");
 
 }
 
@@ -110,6 +114,22 @@ function requestFilter(field, name) {
     });
 }
 
+function legendWidth(data) {
+    var longest = data.reduce(function (a, b) {
+        return a.name.length > b.name.length ? a : b;
+    }).name;
+    var telement = d3.select("svg").append("text");
+    var tspan = telement.append("tspan")
+        .attr("x", 0)
+        .attr("y", 0)
+        .text(longest)
+        .attr("dy", .32 + "em");
+
+    var length = tspan.node().getComputedTextLength();
+    console.log("Longest text: " + length + " for " + longest.length + " characters");
+    telement.remove();
+    return length;
+}
 function updateHistogram(field) {
     currentField = field;
     var data = [];
@@ -119,10 +139,19 @@ function updateHistogram(field) {
                 data.push({name: key, value: json.histogram[key]});
             });
 
-            x.domain(data.map(function (d) {
+            // Calculate dimensions
+            height = (12 * data.length);
+            var longestLabel = legendWidth(data);
+            margin.left = longestLabel > width / 4 ? width / 4 : longestLabel + 5;
+            svg.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            d3.select("svg").attr("height", height + margin.top + margin.bottom);
+
+            y.domain(data.map(function (d) {
                 return d.name;
-            }));
-            y.domain([0, d3.max(data, function (d) {
+            })).rangeBands([0, height], .1);
+
+            x.domain([0, d3.max(data, function (d) {
                 return d.value;
             })]);
 
@@ -144,13 +173,16 @@ function updateHistogram(field) {
                 .attr("class", "bar")
                 .attr("name", function (d) {
                     return d.name;
-                }).attr("x", function (d) {
-                    return x(d.name);
                 }).attr("y", function (d) {
-                    return y(d.value);
-                }).attr("height", function (d) {
-                    return height - y(d.value);
-                }).attr("width", x.rangeBand())
+                    return y(d.name);
+                }).attr("x", function (d) {
+                    return 0;
+                }).attr("width", function (d) {
+                    return x(d.value);
+                }).attr("height", y.rangeBand())
+                .on("mouseover", function (d) {
+                    showInfo(field, d.name, d.value);
+                })
                 .on("click", function (d) {
                     requestFilter(field, d.name);
                 });

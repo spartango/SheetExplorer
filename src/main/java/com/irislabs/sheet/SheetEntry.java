@@ -185,7 +185,7 @@ public class SheetEntry {
         String[] parts = line.split(delimiter);
         int i = 0;
         for (String field : fieldNames) {
-            entry.put(field, (i < parts.length ? parts[i] : ""));
+            entry.put(field, (i < parts.length ? new String(parts[i]) : ""));
             i++;
         }
 

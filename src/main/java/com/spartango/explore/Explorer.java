@@ -51,7 +51,7 @@ public class Explorer {
                                                 .addExactPath("/stages", this::handleStagesRequest)
                                                 .addPrefixPath("/explore/", new ResourceHandler(
                                                         new FileResourceManager(
-                                                                new File("/Users/spartango/Developer/TextLoc/explore"),
+                                                                new File("/Users/spartango/Developer/Explorer/explore"),
                                                                 0)));
         server = Undertow.builder()
                          .addHttpListener(8080, "localhost")
@@ -307,8 +307,9 @@ public class Explorer {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         System.out.println("Loading file");
-        final Sheet sheet = new FileSheet("/Users/spartango/Data/LESO Program data/LESO data - all states.txt").toCollectionSheet();
-
+        final Sheet sheet = new FileSheet("/Users/spartango/Data/LESO Program data/LESO data - all states.txt");
+//        final Sheet sheet = new CSVSheet("/Users/spartango/Data/War Diaries/afg.csv");
+        System.out.println("Loaded file: fields -> " + sheet.fields());
         System.out.println("Starting server on 8080");
         final Explorer explorer = new Explorer(sheet);
 

@@ -3,7 +3,6 @@ package com.irislabs.sheet;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +46,9 @@ public class FileSheet implements Sheet {
     private void parseFields() throws IOException {
         Files.lines(file.toPath())
              .findFirst()
-             .ifPresent(line -> fields = Arrays.asList(line.split(delimiter)));
+             .ifPresent(line -> fields = Stream.of(line.split(delimiter))
+                                               .map(String::new)
+                                               .collect(Collectors.toList()));
     }
 
     private Stream<SheetEntry> parseLines() throws IOException {
