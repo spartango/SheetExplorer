@@ -130,10 +130,23 @@ function legendWidth(data) {
     telement.remove();
     return length;
 }
+
 function updateHistogram(field) {
+    updateHistogramByQuery(field, "/histogram?field=" + field)
+}
+
+function updateHistogramNumeric(field, bins) {
+    updateHistogramByQuery(field, "/histogram/num?field=" + field + "&bins=" + bins)
+}
+
+function updateHistogramLog(field, bins) {
+    updateHistogramByQuery(field, "/histogram/log?field=" + field + "&bins=" + bins)
+}
+
+function updateHistogramByQuery(field, queryString) {
     currentField = field;
     var data = [];
-    d3.json("/histogram?field=" + field,
+    d3.json(queryString,
         function (error, json) {
             Object.keys(json.histogram).forEach(function (key) {
                 data.push({name: key, value: json.histogram[key]});

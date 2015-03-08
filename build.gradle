@@ -35,6 +35,6 @@ dependencies {
 }
 
 // Location of main (for running)
-mainClassName = "com.spartango.Explorer"
+mainClassName = "com.spartango.explore.Explorer"
 
 defaultTasks 'build'

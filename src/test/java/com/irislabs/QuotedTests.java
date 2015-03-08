@@ -1,6 +1,7 @@
 package com.irislabs;
 
 import com.irislabs.sheet.QuotedFileSheet;
+import com.irislabs.sheet.Sheet;
 import org.junit.Test;
 
 /**
@@ -11,7 +12,7 @@ import org.junit.Test;
 public class QuotedTests {
     @Test
     public void testLoad() throws Exception {
-        QuotedFileSheet sheet = new QuotedFileSheet("/Users/spartango/Data/War Diaries/iraq-war-diary-redacted.csv", ",");
+        final Sheet sheet = new QuotedFileSheet("/Users/spartango/Data/War Diaries/iraq-war-diary-redacted.csv", ",");
         System.out.println("Fields: " + sheet.fields());
         System.out.println("Lines: " + sheet.stream().count());
 

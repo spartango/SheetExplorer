@@ -3,7 +3,7 @@ package com.spartango.explore;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.irislabs.sheet.QuotedFileSheet;
+import com.irislabs.sheet.FileSheet;
 import com.irislabs.sheet.Sheet;
 import com.irislabs.sheet.SheetEntry;
 import io.undertow.Handlers;
@@ -13,6 +13,7 @@ import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.resource.FileResourceManager;
 import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.util.Headers;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import java.io.File;
 import java.io.IOException;
@@ -305,12 +306,15 @@ public class Explorer {
         }
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, InvalidFormatException {
         System.out.println("Loading file");
-//        final Sheet sheet = new FileSheet("/Users/spartango/Data/LESO Program data/LESO data - all states.txt");
-        final Sheet sheet = new QuotedFileSheet("/Users/spartango/Data/War Diaries/afg.csv", ",");
+//      final Sheet sheet = new FileSheet("/Users/spartango/Data/LESO Program data/LESO data - all states.txt");
+//      final Sheet sheet = new QuotedFileSheet("/Users/spartango/Data/War Diaries/afg.csv", ",");
+//      final Sheet sheet = new FileSheet("/Users/spartango/Data/CMS Data/Medicare-Physician-and-Other-Supplier-PUF-CY2012/Medicare-Physician-and-Other-Supplier-PUF-CY2012.txt");
+//      final Sheet sheet = new ExcelSheet("/Users/spartango/Data/Spending/China-Global-Investment-Tracker-2014.xls");
+//      final Sheet sheet = new ExcelSheet("/Users/spartango/Data/Spending/China-Global-Investment-Tracker-2014.xls");
+        final Sheet sheet = new FileSheet("/Users/spartango/Dropbox/Harvard/GOV 1430/lab3/data.csv.txt", ",");
 
-//        final Sheet sheet = new QuotedFileSheet("/Users/spartango/Data/War Diaries/iraq-war-diary-redacted.csv", ",");
         System.out.println("Loaded file: fields -> " + sheet.fields());
         System.out.println("Starting server on 8080");
         final Explorer explorer = new Explorer(sheet);
