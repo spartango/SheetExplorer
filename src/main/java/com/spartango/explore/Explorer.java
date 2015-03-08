@@ -10,6 +10,7 @@ import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.PathHandler;
+import io.undertow.server.handlers.RedirectHandler;
 import io.undertow.server.handlers.resource.FileResourceManager;
 import io.undertow.server.handlers.resource.ResourceHandler;
 import io.undertow.util.Headers;
@@ -33,12 +34,13 @@ public class Explorer {
     // Web API
     private final Undertow server;
 
-    public Explorer(Sheet source) {
+    public Explorer(Sheet source, int port) {
         stages = new Stack<>();
         stages.push(new ExplorerStage("Source", source));
 
         // Web API setup
         final PathHandler pathHandler = Handlers.path()
+                                                .addExactPath("/", new RedirectHandler("/explore/explore.html"))
                                                 .addExactPath("/histogram", this::handleHistogramRequest)
                                                 .addExactPath("/histogram/num", this::handleHistogramNumRequest)
                                                 .addExactPath("/histogram/log", this::handleHistogramLogRequest)
@@ -55,13 +57,14 @@ public class Explorer {
                                                                 new File("/Users/spartango/Developer/Explorer/explore"),
                                                                 0)));
         server = Undertow.builder()
-                         .addHttpListener(8080, "localhost")
+                         .addHttpListener(port, null)
                          .setHandler(pathHandler)
                          .build();
         server.start();
     }
 
     public ExplorerStage currentStage() {
+
         return stages.peek();
     }
 
@@ -317,7 +320,7 @@ public class Explorer {
 
         System.out.println("Loaded file: fields -> " + sheet.fields());
         System.out.println("Starting server on 8080");
-        final Explorer explorer = new Explorer(sheet);
+        final Explorer explorer = new Explorer(sheet, 8080);
 
         synchronized (explorer) {
             System.out.println("Ready!");
